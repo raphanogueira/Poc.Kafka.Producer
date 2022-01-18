@@ -28,7 +28,7 @@ namespace KafkaExample.Api.Controllers
         [HttpGet]
         public async Task<IEnumerable<WeatherForecast>> GetAsync()
         {
-            var teste = await _kafkaClient.ProduceAsync("teste-topic", new Message<string, string>());
+            var teste = await _kafkaClient.ProduceAsync("xubraiber", new Message<string, string>());
 
             return null;
         }

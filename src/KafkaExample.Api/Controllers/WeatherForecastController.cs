@@ -1,36 +1,39 @@
 ﻿using Confluent.Kafka;
-using KafkaExample.Domain.Contracts.Brokers;
+using KafkaExample.Domain.Configuration;
+using KafkaExample.Domain.Entities;
+using KafkaExample.Domain.Producers;
+using KafkaExample.Domain.Shareds;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
+using System;
+using System.Net.Mime;
 using System.Threading.Tasks;
 
 namespace KafkaExample.Api.Controllers
 {
+
     [ApiController]
-    [Route("[controller]")]
+    [Route("kafka-example")]
+    [Produces(MediaTypeNames.Application.Json)]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
-        private readonly IKafkaClient _kafkaClient;
+        private readonly KafkaExampleProducer _kafkaExampleProducer;
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger, IKafkaClient kafkaClient)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, KafkaSettings kafkaSettings)
         {
             _logger = logger;
-            _kafkaClient = kafkaClient;
+            _kafkaExampleProducer = new KafkaExampleProducer(kafkaSettings);
         }
 
-        [HttpGet]
-        public async Task<IEnumerable<WeatherForecast>> GetAsync()
+        [HttpPost("producer")]
+        public async Task<DeliveryResult<string, string>> PostAsync(Account account)
         {
-            var teste = await _kafkaClient.ProduceAsync("xubraiber", new Message<string, string>());
+            var message = new Message(account);
 
-            return null;
+            var teste = await _kafkaExampleProducer.HandleAsync(message);
+
+            return teste;
         }
     }
 }

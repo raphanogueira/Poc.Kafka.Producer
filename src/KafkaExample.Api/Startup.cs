@@ -1,7 +1,5 @@
 using KafkaExample.Api.Extensions;
-using KafkaExample.Domain.Clients;
 using KafkaExample.Domain.Configuration;
-using KafkaExample.Domain.Contracts.Brokers;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,8 +20,8 @@ namespace KafkaExample.Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHostedServices();
             services.AddSettings<KafkaSettings>(Configuration);
-            services.AddScoped<IKafkaClient, KafkaClient>();
             services.AddControllers();
         }
 

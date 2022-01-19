@@ -1,4 +1,5 @@
 ﻿using KafkaExample.Domain.Configuration;
+using KafkaExample.Domain.Consumers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,14 @@ namespace KafkaExample.Api.Extensions
             var settings = services.BuildServiceProvider().GetRequiredService<IOptions<T>>().Value;
 
             return services.AddSingleton(settings);
+        }
+
+        public static IServiceCollection AddHostedServices(this IServiceCollection services)
+        {
+            services
+                .AddHostedService<KafkaExampleConsumer>();
+
+            return services;
         }
     }
 }
